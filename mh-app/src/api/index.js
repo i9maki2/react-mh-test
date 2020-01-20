@@ -1,7 +1,6 @@
 import endpoints from './endpoints'
 import {
   get,
-  post,
 } from './requestWrappers'
 import {
   fetchDeliveryDates,
@@ -14,7 +13,6 @@ export default {
   endpoints,
 
   get,
-  post,
 
   fetchDeliveryDates,
   fetchDeliveryTimes,

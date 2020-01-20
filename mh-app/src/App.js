@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import DeliveryPicker from './DeliveryPicker'
+import DeliveryPicker from './components/DeliveryPicker'
 
 function App() {
   return (
