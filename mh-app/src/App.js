@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import DeliveryDate from './Delivery/DeliveryDate' 
+import DeliveryPicker from './DeliveryPicker'
 
 function App() {
   return (
     <div className="App">
-      <DeliveryDate />
+      <DeliveryPicker />
     </div>
   );
 }
