@@ -4,10 +4,20 @@ import ErrorDialog from '../Dialogs/ErrorDialog'
 import DateFnsUtils from '@date-io/date-fns'
 import DatePicker from './DatePicker'
 import TimePicker from './TimePicker'
-import Api from '../../api'
+import svLocale from "date-fns/locale/sv";
+import { loadDeliveryDates, loadDeliveryTimes } from '../../actions/dataThunk'
+import { getDeliveryDates, _deliveryDates } from '../../selectors/dataSelector'
+import { useDispatch, useSelector } from 'react-redux'
 
 const DeliveryPicker = (props) => {
+  const localeMap = { se: svLocale }
+  const dispatch = useDispatch()
+  
   const [ errorDialogOpen, setErrorDialogOpen ] = useState(false)
+  const [ locale, setLocale ] = useState('se')
+
+  const deliveryDates = useSelector(_deliveryDates)
+  console.log('deliveryDates - ', deliveryDates)
 
   function openErrorDialog() {
     setErrorDialogOpen(true)
@@ -15,6 +25,10 @@ const DeliveryPicker = (props) => {
 
   function closeErrorDialog() {
     setErrorDialogOpen(false)
+  }
+
+  async function onDateChange(date) {
+    await dispatch(loadDeliveryTimes('2020-01-23'))
   }
 
   useEffect(() => {
@@ -27,17 +41,14 @@ const DeliveryPicker = (props) => {
     }
 
     async function getDeliveryDates() {
-      const deliveryDatesResult = await Api.fetchDeliveryDates()
-      const deliverTimesResult = await Api.fetchDeliveryTimes()
-      console.log(deliveryDatesResult.data)
-      console.log(deliverTimesResult.data)
+      await dispatch(loadDeliveryDates())
     }
   }, [])
 
   return (
     <>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <DatePicker />
+      <MuiPickersUtilsProvider utils={DateFnsUtils} locale={localeMap[locale]}>
+        <DatePicker onAccept={onDateChange} />
         <TimePicker />
       </MuiPickersUtilsProvider>
       { 

@@ -11,10 +11,10 @@ const ErrorDialog = (props) => {
 
   return (
     <Dialog
-    open={open}
-    onClose={close}
-    aria-labelledby="alert-dialog-title"
-    aria-describedby="alert-dialog-description"
+      open={open}
+      onClose={close}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
     >
     <DialogTitle id="alert-dialog-title">
       { title }
