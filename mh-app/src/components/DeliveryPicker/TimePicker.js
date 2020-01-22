@@ -7,7 +7,7 @@ import ErrorDialog from '../Dialogs/ErrorDialog'
 import TimeSlot from './TimeSlot'
 
 const TimePicker = (props) => {
-  const { date } = props
+  const { date, includeHomeDelivery } = props
   const dispatch = useDispatch()
   const [ anchorEl, openErrorDialog, closeErrorDialog ] = useMenuState(null)
 
@@ -26,15 +26,18 @@ const TimePicker = (props) => {
   }, [date])
 
   if (timeOptions && timeOptions.length > 0) {
+    const filteredTimeOptions = timeOptions.filter(option => option.inHomeAvailable)
+    console.log(timeOptions, filteredTimeOptions)
+
     return (
       <>  
         {
-          timeOptions.map(({startTime, stopTime, isHomeAvailable}, index) => (
+          filteredTimeOptions.map(({startTime, stopTime, inHomeAvailable}, index) => (
             <TimeSlot 
               key={`time-slot-${index}`}
               startTime={startTime} 
               stopTime={stopTime} 
-              isHomeAvailable={isHomeAvailable} 
+              inHomeAvailable={inHomeAvailable}
             />
           ))
         }

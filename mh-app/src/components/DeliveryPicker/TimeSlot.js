@@ -1,7 +1,7 @@
 import React from 'react'
 
 const TimeSlot = (props) => {
-  const { startTime, stopTime, isHomeAvailable } = props
+  const { startTime, stopTime, inHomeAvailable } = props
 
   return (
     <div>

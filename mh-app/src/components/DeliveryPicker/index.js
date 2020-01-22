@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Switch from '@material-ui/core/Switch'
 import ErrorDialog from '../Dialogs/ErrorDialog'
 import { useMenuState } from '../../hooks/mui-hooks' 
 import { formatDate, getMinAndMaxDate, DEFAULT_DATE_FORMAT } from '../../utils/dateHelperFunctions'
@@ -17,6 +19,7 @@ const DeliveryPicker = (props) => {
   
   const [ anchorEl, openErrorDialog, closeErrorDialog ] = useMenuState(null)
   const [ selectedDate, setSelectedDate ] = useState()
+  const [ includeHomeDelivery, setIncludeHomeDelivery ] = useState(false)
 
   useEffect(() => {
     try {
@@ -35,6 +38,12 @@ const DeliveryPicker = (props) => {
 
   return (
     <>
+      <FormControlLabel 
+        control={
+          <Switch value={includeHomeDelivery} />
+        } 
+        label="I want home delivery" 
+      />
       <DatePicker
         format={DEFAULT_DATE_FORMAT}
         onAccept={onDateChange}
@@ -42,7 +51,7 @@ const DeliveryPicker = (props) => {
         maxDate={maxDate}
         disabled={!minDate && !maxDate}
       />
-      { selectedDate && <TimePicker date={formatDate(selectedDate)} /> }
+      { selectedDate && <TimePicker date={formatDate(selectedDate)} includeHomeDelivery={includeHomeDelivery} /> }
       { 
         anchorEl && (
           <ErrorDialog
