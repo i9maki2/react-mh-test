@@ -1,11 +1,20 @@
 import React, { useState } from 'react'
-import { TimePicker as MuiTimePicker } from "@material-ui/pickers"
+import { TimePicker as MuiTimePicker } from '@material-ui/pickers'
 
 const TimePicker = (props) => {
-  const [selectedDate, setDateChange] = useState(new Date());
+  const { times, ...rest } = props
+  const [selectedDate, setDateChange] = useState(new Date())
+
+  console.log(times)
 
   return (
-    <MuiTimePicker autoOk label="12 hours" value={selectedDate} onChange={setDateChange} />
+    <MuiTimePicker 
+      label="Delivery Time" 
+      value={selectedDate} 
+      onChange={setDateChange} 
+      autoOk 
+      {...rest}
+    />
   )
 }
 
