@@ -1,5 +1,5 @@
 import type { Dispatch } from 'redux'
-import { addItems } from './dataActions'
+import { addItems, replaceItems } from './dataActions'
 import Api from '../api'
 
 export const loadDeliveryDates = () => {
@@ -15,7 +15,7 @@ export const loadDeliveryTimes = (dateString) => {
   return async (dispatch: Dispatch<*>) => {
     const result = await Api.fetchDeliveryTimes(dateString)
     const deliveryTimes = result.data
-    dispatch(addItems(deliveryTimes))
+    dispatch(replaceItems(dateString, deliveryTimes))
     return deliveryTimes
   }
 }

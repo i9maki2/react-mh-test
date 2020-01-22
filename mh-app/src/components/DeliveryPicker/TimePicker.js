@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { getDeliveryTimes } from '../../selectors/dataSelector'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadDeliveryTimes } from '../../actions/dataThunk'
 import { useMenuState } from '../../hooks/mui-hooks' 
 import ErrorDialog from '../Dialogs/ErrorDialog'
+import TimeSlot from './TimeSlot'
 
 const TimePicker = (props) => {
   const { date } = props
@@ -24,14 +25,19 @@ const TimePicker = (props) => {
     }
   }, [date])
 
-  if (timeOptions) {
-    const { startTime, stopTime, deliveryDate, isHomeAvailable } = timeOptions
-    
+  if (timeOptions && timeOptions.length > 0) {
     return (
       <>  
-        <div>
-          <span>The delivery is available between { startTime } - { stopTime }</span>
-        </div>
+        {
+          timeOptions.map(({startTime, stopTime, isHomeAvailable}, index) => (
+            <TimeSlot 
+              key={`time-slot-${index}`}
+              startTime={startTime} 
+              stopTime={stopTime} 
+              isHomeAvailable={isHomeAvailable} 
+            />
+          ))
+        }
         { 
           anchorEl && (
             <ErrorDialog
