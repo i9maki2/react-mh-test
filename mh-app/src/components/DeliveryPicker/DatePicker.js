@@ -15,7 +15,6 @@ const DatePicker = (props) => {
         value={selectedDate}
         onChange={setDateChange}
         animateYearScrolling
-        disablePast
         {...rest}
       />
     </MuiPickersUtilsProvider>

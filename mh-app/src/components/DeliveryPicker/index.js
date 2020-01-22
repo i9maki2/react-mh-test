@@ -8,7 +8,7 @@ import { formatDate, getMinAndMaxDate, DEFAULT_DATE_FORMAT } from '../../utils/d
 import DatePicker from './DatePicker'
 import TimePicker from './TimePicker'
 
-import { loadDeliveryDates } from '../../actions/dataThunk'
+import { loadDeliveryDates, loadDeliveryTimes } from '../../actions/dataThunk'
 import { getDeliveryDates } from '../../selectors/dataSelector'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -31,16 +31,35 @@ const DeliveryPicker = (props) => {
     }
   }, [])
 
+  useEffect(() => {
+    if (selectedDate) {
+      try {
+        dispatch(loadDeliveryTimes(formatDate(selectedDate)))
+      } catch (error) {
+        openErrorDialog()
+        console.error('Could not get delivery times ', error)
+      } finally {
+      }
+    }
+  }, [selectedDate])
+
 
   function onDateChange(date) {
     setSelectedDate(date)
+  }
+
+  function onHomeDeliveryChange() {
+    setIncludeHomeDelivery(!includeHomeDelivery)
   }
 
   return (
     <>
       <FormControlLabel 
         control={
-          <Switch value={includeHomeDelivery} />
+          <Switch 
+            value={includeHomeDelivery}
+            onChange={onHomeDeliveryChange} 
+          />
         } 
         label="I want home delivery" 
       />
@@ -49,9 +68,14 @@ const DeliveryPicker = (props) => {
         onAccept={onDateChange}
         minDate={minDate}
         maxDate={maxDate}
+        value={minDate}
         disabled={!minDate && !maxDate}
       />
-      { selectedDate && <TimePicker date={formatDate(selectedDate)} includeHomeDelivery={includeHomeDelivery} /> }
+      { 
+        selectedDate && (
+          <TimePicker date={formatDate(selectedDate)} includeHomeDelivery={includeHomeDelivery} />
+        )
+      }
       { 
         anchorEl && (
           <ErrorDialog

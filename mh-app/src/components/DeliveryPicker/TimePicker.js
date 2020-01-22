@@ -1,33 +1,14 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { getDeliveryTimes } from '../../selectors/dataSelector'
-import { useDispatch, useSelector } from 'react-redux'
-import { loadDeliveryTimes } from '../../actions/dataThunk'
-import { useMenuState } from '../../hooks/mui-hooks' 
-import ErrorDialog from '../Dialogs/ErrorDialog'
+import { useSelector } from 'react-redux'
 import TimeSlot from './TimeSlot'
 
 const TimePicker = (props) => {
   const { date, includeHomeDelivery } = props
-  const dispatch = useDispatch()
-  const [ anchorEl, openErrorDialog, closeErrorDialog ] = useMenuState(null)
-
   const timeOptions = useSelector(state => getDeliveryTimes(state, date))
 
-  useEffect(() => {
-    if (date) {
-      try {
-        dispatch(loadDeliveryTimes(date))
-      } catch (error) {
-        openErrorDialog()
-        console.error('Could not get delivery times ', error)
-      } finally {
-      }
-    }
-  }, [date])
-
   if (timeOptions && timeOptions.length > 0) {
-    const filteredTimeOptions = timeOptions.filter(option => option.inHomeAvailable)
-    console.log(timeOptions, filteredTimeOptions)
+    const filteredTimeOptions = timeOptions.filter(option => includeHomeDelivery ? option.inHomeAvailable : option)
 
     return (
       <>  
@@ -40,16 +21,6 @@ const TimePicker = (props) => {
               inHomeAvailable={inHomeAvailable}
             />
           ))
-        }
-        { 
-          anchorEl && (
-            <ErrorDialog
-              open={anchorEl}
-              close={closeErrorDialog}
-              title={'Oups, something went wrong'}
-              description={'Please try again later'}
-            />
-          )
         }
       </>
     )
