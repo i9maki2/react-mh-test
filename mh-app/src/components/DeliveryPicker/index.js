@@ -1,35 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import ErrorDialog from '../Dialogs/ErrorDialog'
+import { useMenuState } from '../../hooks/mui-hooks' 
+
 import DateFnsUtils from '@date-io/date-fns'
 import DatePicker from './DatePicker'
 import TimePicker from './TimePicker'
-import svLocale from "date-fns/locale/sv";
+import { formatDate } from '../../utils/dateHelperFunctions'
+
 import { loadDeliveryDates, loadDeliveryTimes } from '../../actions/dataThunk'
 import { getDeliveryDates, _deliveryDates } from '../../selectors/dataSelector'
 import { useDispatch, useSelector } from 'react-redux'
 
 const DeliveryPicker = (props) => {
-  const localeMap = { se: svLocale }
   const dispatch = useDispatch()
-  
-  const [ errorDialogOpen, setErrorDialogOpen ] = useState(false)
-  const [ locale, setLocale ] = useState('se')
-
   const deliveryDates = useSelector(_deliveryDates)
-  console.log('deliveryDates - ', deliveryDates)
-
-  function openErrorDialog() {
-    setErrorDialogOpen(true)
-  }
-
-  function closeErrorDialog() {
-    setErrorDialogOpen(false)
-  }
-
-  async function onDateChange(date) {
-    await dispatch(loadDeliveryTimes('2020-01-23'))
-  }
+  
+  const [ anchorEl, openErrorDialog, closeErrorDialog ] = useMenuState(null)
 
   useEffect(() => {
     try {
@@ -45,16 +32,20 @@ const DeliveryPicker = (props) => {
     }
   }, [])
 
+  async function onDateChange(date) {
+    await dispatch(loadDeliveryTimes(formatDate(date)))
+  }
+
   return (
     <>
-      <MuiPickersUtilsProvider utils={DateFnsUtils} locale={localeMap[locale]}>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <DatePicker onAccept={onDateChange} />
         <TimePicker />
       </MuiPickersUtilsProvider>
       { 
-        errorDialogOpen && (
+        anchorEl && (
           <ErrorDialog
-            open={errorDialogOpen}
+            open={anchorEl}
             close={closeErrorDialog}
             title={'Oups, something went wrong'}
             description={'Please try again later'}

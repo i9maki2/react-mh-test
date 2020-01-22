@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import { DatePicker as MuiDatePicker } from "@material-ui/pickers"
+import { DatePicker as MuiDatePicker } from '@material-ui/pickers'
+import { today, formatDate, DEFAULT_DATE_FORMAT } from '../../utils/dateHelperFunctions'
 
 const DatePicker = (props) => {
   const { availableDates, onAccept } = props
-  const [selectedDate, setDateChange] = useState(new Date());
+  const [selectedDate, setDateChange] = useState(today);
 
   return (
     <MuiDatePicker
@@ -12,7 +13,7 @@ const DatePicker = (props) => {
       onChange={setDateChange}
       onAccept={onAccept}
       animateYearScrolling
-      format={'yyyy-mm-dd'}
+      format={DEFAULT_DATE_FORMAT}
       disablePast
     />
   )
