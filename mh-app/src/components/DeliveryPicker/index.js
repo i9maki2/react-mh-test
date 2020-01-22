@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { MuiPickersUtilsProvider } from '@material-ui/pickers'
 import ErrorDialog from '../Dialogs/ErrorDialog'
 import { useMenuState } from '../../hooks/mui-hooks' 
+import { formatDate, getMinAndMaxDate, DEFAULT_DATE_FORMAT } from '../../utils/dateHelperFunctions'
 
-import DateFnsUtils from '@date-io/date-fns'
 import DatePicker from './DatePicker'
 import TimePicker from './TimePicker'
-import { today, formatDate, getMinAndMaxDate, DEFAULT_DATE_FORMAT } from '../../utils/dateHelperFunctions'
 
-import { loadDeliveryDates, loadDeliveryTimes } from '../../actions/dataThunk'
+import { loadDeliveryDates } from '../../actions/dataThunk'
 import { getDeliveryDates } from '../../selectors/dataSelector'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -30,17 +28,6 @@ const DeliveryPicker = (props) => {
     }
   }, [])
 
-  useEffect(() => {
-    if (selectedDate) {
-      try {
-        dispatch(loadDeliveryTimes(formatDate(selectedDate)))
-      } catch (error) {
-        openErrorDialog()
-        console.error('Could not get delivery times ', error)
-      } finally {
-      }
-    }
-  }, selectedDate)
 
   function onDateChange(date) {
     setSelectedDate(date)
@@ -48,19 +35,14 @@ const DeliveryPicker = (props) => {
 
   return (
     <>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <DatePicker
-          format={DEFAULT_DATE_FORMAT}
-          onAccept={onDateChange}
-          minDate={minDate}
-          maxDate={maxDate}
-          disabled={!minDate && !maxDate}
-        />
-        <TimePicker
-          times={selectedDate}
-          disabled={!selectedDate}
-        />
-      </MuiPickersUtilsProvider>
+      <DatePicker
+        format={DEFAULT_DATE_FORMAT}
+        onAccept={onDateChange}
+        minDate={minDate}
+        maxDate={maxDate}
+        disabled={!minDate && !maxDate}
+      />
+      { selectedDate && <TimePicker date={formatDate(selectedDate)} /> }
       { 
         anchorEl && (
           <ErrorDialog
@@ -71,7 +53,6 @@ const DeliveryPicker = (props) => {
           />
         )
       }
-
     </>
   )
 }

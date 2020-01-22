@@ -1,21 +1,53 @@
-import React, { useState } from 'react'
-import { TimePicker as MuiTimePicker } from '@material-ui/pickers'
+import React, { useEffect, useState } from 'react'
+import { getDeliveryTimes } from '../../selectors/dataSelector'
+import { useDispatch, useSelector } from 'react-redux'
+import { loadDeliveryTimes } from '../../actions/dataThunk'
+import { useMenuState } from '../../hooks/mui-hooks' 
+import ErrorDialog from '../Dialogs/ErrorDialog'
 
 const TimePicker = (props) => {
-  const { times, ...rest } = props
-  const [selectedDate, setDateChange] = useState(new Date())
+  const { date } = props
+  const dispatch = useDispatch()
+  const [ anchorEl, openErrorDialog, closeErrorDialog ] = useMenuState(null)
 
-  console.log(times)
+  const timeOptions = useSelector(state => getDeliveryTimes(state, date))
 
-  return (
-    <MuiTimePicker 
-      label="Delivery Time" 
-      value={selectedDate} 
-      onChange={setDateChange} 
-      autoOk 
-      {...rest}
-    />
-  )
+  useEffect(() => {
+    if (date) {
+      try {
+        dispatch(loadDeliveryTimes(date))
+      } catch (error) {
+        openErrorDialog()
+        console.error('Could not get delivery times ', error)
+      } finally {
+      }
+    }
+  }, [date])
+
+  if (timeOptions) {
+    const { startTime, stopTime, deliveryDate, isHomeAvailable } = timeOptions
+    
+    return (
+      <>  
+        <div>
+          <span>The delivery is available between { startTime } - { stopTime }</span>
+        </div>
+        { 
+          anchorEl && (
+            <ErrorDialog
+              open={anchorEl}
+              close={closeErrorDialog}
+              title={'Oups, something went wrong'}
+              description={'Please try again later'}
+            />
+          )
+        }
+      </>
+    )
+  }
+  else {
+    return null
+  }
 }
 
 export default TimePicker
