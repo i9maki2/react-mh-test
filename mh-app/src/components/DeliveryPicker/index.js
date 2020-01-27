@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Switch from '@material-ui/core/Switch'
+import { makeStyles, Button, Switch, Typography } from '@material-ui/core'
 import ErrorDialog from '../Dialogs/ErrorDialog'
 import { useMenuState } from '../../hooks/mui-hooks' 
 import { formatDate, getMinAndMaxDate, DEFAULT_DATE_FORMAT } from '../../utils/dateHelperFunctions'
@@ -12,13 +12,36 @@ import { loadDeliveryDates, loadDeliveryTimes } from '../../actions/dataThunk'
 import { getDeliveryDates } from '../../selectors/dataSelector'
 import { useDispatch, useSelector } from 'react-redux'
 
+const useStyles = makeStyles(theme => ({
+  root: {
+    paddingTop: theme.spacing(3),
+    paddingBottom: theme.spacing(3)
+  },
+  section: {
+    marginTop: theme.spacing(4),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  confirmButtonWrapper: {
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'center',
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(4),
+  }
+}))
+
 const DeliveryPicker = (props) => {
+  const { onPicked } = props
   const dispatch = useDispatch()
+  const classes = useStyles()
   const availableDeliveryDates = useSelector(getDeliveryDates)
   const { minDate, maxDate } = getMinAndMaxDate(Object.keys(availableDeliveryDates))
   
   const [ anchorEl, openErrorDialog, closeErrorDialog ] = useMenuState(null)
   const [ selectedDate, setSelectedDate ] = useState()
+  const [ selectedTimeSlot, setSelectedTimeSlot ] = useState()
   const [ includeHomeDelivery, setIncludeHomeDelivery ] = useState(false)
 
   useEffect(() => {
@@ -48,45 +71,70 @@ const DeliveryPicker = (props) => {
     setSelectedDate(date)
   }
 
-  function onHomeDeliveryChange() {
+  function onTimeSlotPicked(event, timeSlot) {
+    setSelectedTimeSlot(timeSlot)
+  }
+
+  function toggleHomeDelivery() {
     setIncludeHomeDelivery(!includeHomeDelivery)
   }
 
+  function pickDelivery(event) {
+    onPicked(event)
+  }
+
   return (
-    <>
-      <FormControlLabel 
-        control={
-          <Switch 
-            value={includeHomeDelivery}
-            onChange={onHomeDeliveryChange} 
-          />
-        } 
-        label="I want home delivery" 
-      />
-      <DatePicker
-        format={DEFAULT_DATE_FORMAT}
-        onAccept={onDateChange}
-        minDate={minDate}
-        maxDate={maxDate}
-        value={minDate}
-        disabled={!minDate && !maxDate}
-      />
-      { 
-        selectedDate && (
-          <TimePicker date={formatDate(selectedDate)} includeHomeDelivery={includeHomeDelivery} />
-        )
-      }
-      { 
-        anchorEl && (
-          <ErrorDialog
-            open={anchorEl}
-            close={closeErrorDialog}
-            title={'Oups, something went wrong'}
-            description={'Please try again later'}
-          />
-        )
-      }
-    </>
+    <div className={classes.root}>
+      <div className={classes.section}>
+        <Typography variant="h6" component="h6" gutterBottom>Choose delivery date:</Typography>
+        <DatePicker
+          format={DEFAULT_DATE_FORMAT}
+          onAccept={onDateChange}
+          minDate={minDate}
+          maxDate={maxDate}
+          disabled={!minDate && !maxDate}
+        />
+      </div>
+      <div className={classes.section}>
+        <FormControlLabel 
+          control={
+            <Switch onChange={toggleHomeDelivery} value={includeHomeDelivery} />
+          } 
+          label="I want home delivery" 
+        />
+      </div>
+      <div className={classes.section}>
+        { selectedDate && (
+            <TimePicker 
+              date={formatDate(selectedDate)} 
+              includeHomeDelivery={includeHomeDelivery}
+              onTimePick={onTimeSlotPicked}
+              selectedTimeSlot={selectedTimeSlot}
+            />
+          )
+        }
+        { 
+          anchorEl && (
+            <ErrorDialog
+              open={anchorEl}
+              close={closeErrorDialog}
+              title={'Oups, something went wrong'}
+              description={'Please try again later'}
+            />
+          )
+        }
+      </div>
+      <div className={classes.confirmButtonWrapper}>
+        <Button
+          disabled={!selectedTimeSlot}
+          variant="contained"
+          className={classes.addToCartButton}
+          onClick={pickDelivery}
+        >
+          Confirm
+        </Button>
+      </div>
+    </div>
   )
 }
 
