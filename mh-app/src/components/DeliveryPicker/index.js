@@ -4,6 +4,7 @@ import { makeStyles, Button, Switch, Typography } from '@material-ui/core'
 import ErrorDialog from '../Dialogs/ErrorDialog'
 import { useMenuState } from '../../hooks/mui-hooks' 
 import { formatDate, getMinAndMaxDate, DEFAULT_DATE_FORMAT } from '../../utils/dateHelperFunctions'
+import { addItem } from '../../actions/checkoutActions'
 
 import DatePicker from './DatePicker'
 import TimePicker from './TimePicker'
@@ -80,6 +81,7 @@ const DeliveryPicker = (props) => {
   }
 
   function pickDelivery(event) {
+    dispatch(addItem(selectedTimeSlot))
     onPicked(event)
   }
 

@@ -1,7 +1,6 @@
-export const ADD_ITEM = 'ADD_ITEM'
-export const ADD_ITEMS = 'ADD_ITEMS'
-export const REPLACE_ITEMS = 'REPLACE_ITEMS'
-export const RESET_DATA_STATE = 'RESET_DATA_STATE'
+export const ADD_ITEM_TO_CHECKOUT = 'ADD_ITEM_TO_CHECKOUT'
+export const ADD_ITEMS_TO_CHECKOUT = 'ADD_ITEMS_TO_CHECKOUT'
+export const RESET_CHECKOUT_STATE = 'RESET_CHECKOUT_STATE'
 
 type State = {
   +[string]: Item,
@@ -11,13 +10,13 @@ const initialState: State = {}
 
 export default (state: State = initialState, action: Object): State => {
   switch (action.type) {
-    case ADD_ITEM:
+    case ADD_ITEM_TO_CHECKOUT:
       return {
         ...state,
-        [action.item]: action.item,
+        [action.item.deliveryTimeId]: action.item,
       }
 
-    case ADD_ITEMS: {
+    case ADD_ITEMS_TO_CHECKOUT: {
       return {
         ...state,
         ...action.items
@@ -28,14 +27,7 @@ export default (state: State = initialState, action: Object): State => {
       }
     }
 
-    case REPLACE_ITEMS: {
-      return {
-        ...state,
-        [action.id]: action.items
-      }
-    }
-
-    case RESET_DATA_STATE:
+    case RESET_CHECKOUT_STATE:
       return {
         ...initialState,
       }
