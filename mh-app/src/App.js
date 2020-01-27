@@ -22,21 +22,23 @@ function App() {
 
   function onDeliveryPicked(event) {
     openCheckout()
+    closeDeliveryDialog()
   }
 
   function openCheckout() {
     setShoppingCartOpen(true)
   }
 
-  function closeCheckout() {
+  function closeCheckout(event) {
     setShoppingCartOpen(false)
+    openDeliveryDialog(event)
   }
 
   return (
     <Provider store={store}>
         {
           anchorEl && (
-            <DeliveryPickerDialog classes={{ paper: classes.deliveryDialog }} open={true} >
+            <DeliveryPickerDialog classes={{ paper: classes.deliveryDialog }} open={Boolean(anchorEl)} onClose={closeCheckout} >
               <Typography variant="h5" component="h5">Delivery Options</Typography>
               <DeliveryPicker onPicked={onDeliveryPicked} />
             </DeliveryPickerDialog>
