@@ -12,8 +12,6 @@ const TimePicker = (props) => {
 
   const timeOptions = useSelector(state => getDeliveryTimes(state, date))
 
-  console.log(timeOptions)
-
   useEffect(() => {
     if (date) {
       try {

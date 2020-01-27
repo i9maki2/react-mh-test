@@ -4,5 +4,5 @@ export const checkoutItems = state => state.checkout
 
 export const getCheckoutItems = createSelector(
   [checkoutItems],
-  (x) => x,
+  (x) => Object.values(x),
 )

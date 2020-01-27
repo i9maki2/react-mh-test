@@ -8,11 +8,28 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const OrderSummary = (props) => {
-  const { open, onClose } = props
+  const { checkoutItems } = props
   const classes = useStyles()
+
+  console.log('order summary', checkoutItems)
+
+  function renderItem(item) {
+    const { type, deliveryDate, startTime, stopTime, inHomeAvailable } = item
+    switch(type) {
+      case 'delivery':
+        return (
+          <>
+            <div>{deliveryDate}</div>
+            <div>{startTime} - {stopTime}</div>
+          </>
+        )
+  
+      default: return null
+    }
+  }
   
   return (
-    <div>order summary</div>
+    checkoutItems.map(item => renderItem(item))
   )
 }
 

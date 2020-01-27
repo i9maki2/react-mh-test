@@ -13,7 +13,7 @@ export default (state: State = initialState, action: Object): State => {
     case ADD_ITEM_TO_CHECKOUT:
       return {
         ...state,
-        [action.item.deliveryTimeId]: action.item,
+        [action.item.deliveryTimeId]: { type: 'delivery', ...action.item },
       }
 
     case ADD_ITEMS_TO_CHECKOUT: {

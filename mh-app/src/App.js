@@ -45,7 +45,7 @@ function App() {
           )
         }
         {
-          <Checkout open={shoppingCartOpen} onClose={closeCheckout} />
+          shoppingCartOpen && <Checkout open={Boolean(shoppingCartOpen)} onClose={closeCheckout} />
         }
     </Provider>
   )
