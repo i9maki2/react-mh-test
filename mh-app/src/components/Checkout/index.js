@@ -1,8 +1,8 @@
 import React from 'react'
 import { Drawer, Typography, Button, makeStyles } from '@material-ui/core'
 import { useSelector } from 'react-redux'
-import OrderSummary from './OrderSummary'
-import { getCheckoutItems } from '../../selectors/checkoutSelector'
+import DeliverySummary from './DeliverySummary'
+import { getSelectedDeliveryData } from '../../selectors/checkoutSelector'
 
 const useStyles = makeStyles(theme => ({
   drawer: {
@@ -33,8 +33,7 @@ const Checkout = (props) => {
   const { open, onClose } = props
   const classes = useStyles()
 
-  const checkoutItems = useSelector(getCheckoutItems)
-  console.log('checkout items - ', checkoutItems)
+  const deliveryData = useSelector(getSelectedDeliveryData)
   
   return (
     <Drawer classes={{ paper: classes.drawer }} anchor="right" open={open} onClose={onClose}>
@@ -44,9 +43,11 @@ const Checkout = (props) => {
         </div>
       </div>
       <div className={classes.orderSummaryWrapper}>
-        {
-          checkoutItems && <OrderSummary checkoutItems={checkoutItems} />
-        }
+        <div>
+          {
+            deliveryData && <DeliverySummary deliveryData={deliveryData} onClose={onClose} />
+          }
+        </div>
         <div className={classes.checkoutButtonWrapper}>
           <Button
             disabled

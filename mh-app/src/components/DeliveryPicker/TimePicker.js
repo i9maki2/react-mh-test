@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { getDeliveryTimes } from '../../selectors/dataSelector'
 import { useDispatch, useSelector } from 'react-redux'
 import TimeSlot from './TimeSlot'
 import { loadDeliveryTimes } from '../../actions/dataThunk'
 import { useMenuState } from '../../hooks/mui-hooks'
+import TimeSlotEmptyState from '../EmptyStates/TimeSlotEmptyState'
 
 const TimePicker = (props) => {
   const { date, includeHomeDelivery, onTimePick, selectedTimeSlot } = props
@@ -32,7 +33,8 @@ const TimePicker = (props) => {
     const filteredTimeOptions = timeOptions.filter(option => includeHomeDelivery ? option.inHomeAvailable : true)
 
     return (
-      <>  
+      <> 
+        { filteredTimeOptions && filteredTimeOptions.length === 0 && <TimeSlotEmptyState /> }
         {
           filteredTimeOptions.map((timeSlot, index) => (
             <TimeSlot 

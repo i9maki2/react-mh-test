@@ -12,6 +12,7 @@ import TimePicker from './TimePicker'
 import { loadDeliveryDates, loadDeliveryTimes } from '../../actions/dataThunk'
 import { getDeliveryDates } from '../../selectors/dataSelector'
 import { useDispatch, useSelector } from 'react-redux'
+import { setLocalStorageItem, getLocalStorageItem } from '../../utils/localStorageFunctions'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -43,7 +44,9 @@ const DeliveryPicker = (props) => {
   const [ anchorEl, openErrorDialog, closeErrorDialog ] = useMenuState(null)
   const [ selectedDate, setSelectedDate ] = useState()
   const [ selectedTimeSlot, setSelectedTimeSlot ] = useState()
-  const [ includeHomeDelivery, setIncludeHomeDelivery ] = useState(false)
+
+  const homeDeliveryFromLocalStorage = getBooleanValue(getLocalStorageItem('includeHomeDelivery'))
+  const [ includeHomeDelivery, setIncludeHomeDelivery ] = useState(() =>  homeDeliveryFromLocalStorage)
 
   useEffect(() => {
     try {
@@ -52,6 +55,7 @@ const DeliveryPicker = (props) => {
       openErrorDialog()
       console.error('Could not get delivery dates ', error)
     } finally {
+      
     }
   }, [])
 
@@ -67,6 +71,19 @@ const DeliveryPicker = (props) => {
     }
   }, [selectedDate])
 
+  function getBooleanValue(value) {
+    if (!value || value === null) {
+      return false
+    }
+
+    if (value === 'true') {
+      return true
+    }
+
+    if (value === 'false') {
+      return false
+    }
+  }
 
   function onDateChange(date) {
     setSelectedDate(date)
@@ -77,6 +94,7 @@ const DeliveryPicker = (props) => {
   }
 
   function toggleHomeDelivery() {
+    setLocalStorageItem('includeHomeDelivery', !includeHomeDelivery)
     setIncludeHomeDelivery(!includeHomeDelivery)
   }
 
@@ -99,9 +117,7 @@ const DeliveryPicker = (props) => {
       </div>
       <div className={classes.section}>
         <FormControlLabel 
-          control={
-            <Switch onChange={toggleHomeDelivery} value={includeHomeDelivery} />
-          } 
+          control={<Switch onChange={toggleHomeDelivery} checked={includeHomeDelivery} />}
           label="I want home delivery" 
         />
       </div>
